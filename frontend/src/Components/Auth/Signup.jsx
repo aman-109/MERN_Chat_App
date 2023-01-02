@@ -90,7 +90,7 @@ const Signup = () => {
         onChange={(e)=>postProfilePic(e.target.files[0])}
         /> 
       </FormControl>
-      <Stack>
+      <Stack w="100%">
 
       <Button colorScheme={"blue"}
       width="100%"
