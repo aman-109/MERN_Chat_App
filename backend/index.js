@@ -1,21 +1,14 @@
 const express= require("express")
-const { chats } = require("./data/data")
+const connect = require("./config/db")
 require("dotenv").config()
-
-const app=express()
+const userRoutes=require("./routes/userRoutes")
 const PORT=process.env.PORT || 5000
+connect()
+const app=express()
+app.use(express.json())
 
-app.get("/",(req,res)=>{
-    res.send("Api is running")
-})
 
-app.get("/get/chat",(req,res)=>{
-    res.send(chats)
-})
-app.get("/api/chat/:id",(req,res)=>{
-    const singleChat=chats.find((c)=>c._id===req.params.id)
-   res.send(singleChat)
-})
+app.use("/api/user",userRoutes)
 
 
 
