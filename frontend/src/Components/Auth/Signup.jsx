@@ -1,6 +1,8 @@
-import { Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, Stack, VStack } from '@chakra-ui/react'
+import { Button, FormControl, FormLabel, Input, InputGroup, InputRightElement, Stack, useToast, VStack } from '@chakra-ui/react'
 import React, { useState } from 'react'
 import {ViewIcon,ViewOffIcon} from "@chakra-ui/icons"
+import {useNavigate} from "react-router-dom"
+import axios from 'axios'
 
 const Signup = () => {
   const [state,setState]=useState({
@@ -10,8 +12,11 @@ const Signup = () => {
     confirmPassword:"",
 
   })
+  const toast=useToast()
   const [profile,setProfile]=useState()
+  const [isLoading,setLoading]=useState(false)
   const [show,setShow]=useState(false)
+  const navigate=useNavigate()
 
   const handleChange=(e)=>{
     const {name,value}=e.target
@@ -20,12 +25,111 @@ const Signup = () => {
       [name]:value
     })
   }
-  const postProfilePic=(pic)=>{
+  const postProfilePic=(pics)=>{
+    setLoading(true)
+    if(pics===undefined){
+      toast({
+        title: "Please Select an Image!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      return;
+    }
 
+    if(pics.type==="image/png" || pics.type==="image/jpeg" || pics.type==="image/jpg")
+    {
+      const data=new FormData()
+      data.append("file",pics)
+      data.append("upload_preset","IweChat_App")
+      data.append("cloud_name","dh3l8fga0")
+      fetch("https://api.cloudinary.com/v1_1/dh3l8fga0/image/upload", {
+        method: "post",
+        body: data,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setProfile(data.url.toString());
+          // console.log(data.url.toString());
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+        });
+    }
+    else {
+      toast({
+        title: "Please Select an Image!",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
   }
 
-  const handleSubmit=(e)=>{
+  const handleSubmit=async (e)=>{
     e.preventDefault()
+    if (!state.name || !state.email || !state.password || !state.confirmPassword) {
+      toast({
+        title: "Please Fill all the Feilds",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
+    if (state.password !== state.confirmPassword) {
+      toast({
+        title: "Passwords Do Not Match",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      return;
+    }
+
+    try{
+      let body={
+        name:state.name,
+        email:state.email,
+        password:state.password,
+        profile
+      }
+      
+      const data=await axios.post("http://localhost:5000/api/user",body,{
+        headers:{
+          "Content-type": "application/json",
+        }
+      })
+      console.log(data.data)
+      toast({
+        title: "Registration Successful",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false)
+      navigate("/chats")
+    }catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: error.response.data.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+    }
   }
   return (
     <>
