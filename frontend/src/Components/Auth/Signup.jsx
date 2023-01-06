@@ -101,7 +101,7 @@ const Signup = () => {
         name:state.name,
         email:state.email,
         password:state.password,
-        profile
+        pic:profile
       }
       
       const data=await axios.post("http://localhost:5000/api/user",body,{
@@ -117,6 +117,7 @@ const Signup = () => {
         isClosable: true,
         position: "bottom",
       });
+      localStorage.setItem("userInfo", JSON.stringify(data.data));
       setLoading(false)
       navigate("/chats")
     }catch (error) {
