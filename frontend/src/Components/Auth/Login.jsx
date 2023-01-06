@@ -58,6 +58,7 @@ const Login = () => {
         isClosable: true,
         position: "bottom",
       });
+      localStorage.setItem("userInfo", JSON.stringify(data.data));
       setLoading(false)
       navigate("/chats")
     }catch (error) {
@@ -94,7 +95,7 @@ const Login = () => {
                 type={show ? "text" : "password"}
                 placeholder="Enter Your Password"
                 name="password"
-                value={state.confirmPassword}
+                value={state.password}
                 onChange={handleChange}
               />
               <InputRightElement width="4.5rem">
