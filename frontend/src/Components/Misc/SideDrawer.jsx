@@ -1,7 +1,7 @@
 
 
 import { BellIcon, ChevronDownIcon, SearchIcon } from '@chakra-ui/icons'
-import { Avatar, Box, Button, Drawer, DrawerBody, DrawerContent, DrawerHeader, DrawerOverlay, Input, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Text, Tooltip, useDisclosure, useToast } from '@chakra-ui/react'
+import { Avatar, Box, Button, Drawer, DrawerBody, DrawerContent, DrawerHeader, DrawerOverlay, Input, Menu, MenuButton, MenuDivider, MenuItem, MenuList, Spinner, Text, Tooltip, useDisclosure, useToast } from '@chakra-ui/react'
 import axios from 'axios'
 import React from 'react'
 import { useState } from 'react'
@@ -176,6 +176,8 @@ const SideDrawer = () => {
                     ))
                 )
             }
+                        {chatLoading && <Spinner ml="auto" display="flex" />}
+
           </DrawerBody>
         </DrawerContent>
       </Drawer>
