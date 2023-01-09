@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import axios from "axios";
 const UserChats = () => {
   const [loggedUser, setLoggedUser] = useState();
-  const { selectedChat, chats,setChats ,user} = useContext(AppContext);
+  const { selectedChat,setSelectedChat, chats,setChats ,user} = useContext(AppContext);
   const toast=useToast()
 
   const getChats=async()=>{
@@ -88,7 +88,7 @@ const UserChats = () => {
             <Stack overflowY="scroll">
               {chats?.map((ele) => (
                 <Box
-                  // onClick={() => setSelectedChat(ele)}
+                  onClick={() => setSelectedChat(ele)}
                   cursor="pointer"
                   bg={selectedChat === ele ? "#38B2AC" : "#E8E8E8"}
                   color={selectedChat === ele ? "white" : "black"}
