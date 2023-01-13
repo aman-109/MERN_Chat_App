@@ -146,19 +146,19 @@ const renameGroupChat = asyncHandler(async (req, res) => {
 const addToGroup = asyncHandler(async (req, res) => {
   const { chatId, userId } = req.body;
   
-    const user= await Chat.find({groupAdmin:{$eq:req.user._id}})
+    // const user= await Chat.find({groupAdmin:{$eq:req.user._id}})
 
-    if(user.length==0){
-        res.status(400);
-        throw new Error("Only admin can add user");
-    }
-    else{
-        let existingUser = await Chat.find({ users: { $elemMatch: { $eq: userId } } })
+    // if(user.length==0){
+    //     res.status(400);
+    //     throw new Error("Only admin can add user");
+    // }
+    // else{
+    //     let existingUser = await Chat.find({ users: { $elemMatch: { $eq: userId } } })
        
-        if(existingUser.length !=0){
-            res.status(400);
-            throw new Error("User Already Added in Group");
-        }else{
+    //     if(existingUser.length !=0){
+    //         res.status(400);
+    //         throw new Error("User Already Added in Group");
+    //     }else{
 
             const addUser = await Chat.findByIdAndUpdate(
               chatId,
@@ -175,9 +175,9 @@ const addToGroup = asyncHandler(async (req, res) => {
             } else {
               res.json(addUser);
             }
-        }
+        // }
        
-    }
+    // }
 });
 
 
@@ -187,12 +187,12 @@ const addToGroup = asyncHandler(async (req, res) => {
 const removeFromGroupChat = asyncHandler(async (req, res) => {
   const { chatId, userId } = req.body;
 
-  const user= await Chat.find({groupAdmin:{$eq:req.user._id}})
+  // const user= await Chat.find({groupAdmin:{$eq:req.user._id}})
 
-  if(user.length==0){
-      res.status(400);
-      throw new Error("Only admin can remove user");
-  }else{
+  // if(user.length==0){
+  //     res.status(400);
+  //     throw new Error("Only admin can remove user");
+  // }else{
 
       const removeUser = await Chat.findByIdAndUpdate(
         chatId,
@@ -209,7 +209,7 @@ const removeFromGroupChat = asyncHandler(async (req, res) => {
       } else {
         res.json(removeUser);
       }
-  }
+  // }
 });
 
 module.exports = {
