@@ -6,7 +6,8 @@ import SkeletonCom from "../Components/Misc/SkeletonCom";
 import { getSender } from "../Utils/Utils";
 import { useEffect } from "react";
 import axios from "axios";
-const UserChats = () => {
+import GroupChatModel from "./Misc/GroupChatModel";
+const UserChats = ({fetchAgain}) => {
   const [loggedUser, setLoggedUser] = useState();
   const { selectedChat,setSelectedChat, chats,setChats ,user} = useContext(AppContext);
   const toast=useToast()
@@ -38,7 +39,7 @@ const UserChats = () => {
     let loginUser=JSON.parse(localStorage.getItem("userInfo"))
     setLoggedUser(loginUser)
     getChats()
-  },[])
+  },[fetchAgain])
 
 
   return (
@@ -64,6 +65,7 @@ const UserChats = () => {
           alignItems="center"
         >
           My Chats
+          <GroupChatModel>
           <Button
             display="flex"
             fontSize={{ base: "17px", md: "10px", lg: "17px" }}
@@ -71,6 +73,7 @@ const UserChats = () => {
           >
             New Group Chat
           </Button>
+          </GroupChatModel>
         </Box>
 
         {/* users chats */}
