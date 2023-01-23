@@ -5,6 +5,7 @@ const { notFound, errorHandler } = require("./middleware/errorMiddleware")
 require("dotenv").config()
 const userRoutes=require("./routes/userRoutes")
 const chatRoutes=require("./routes/chatRoutes")
+const messageRoutes=require("./routes/messageRoutes")
 
 const PORT=process.env.PORT || 5000
 
@@ -16,6 +17,7 @@ app.use(cors())
 
 app.use("/api/user",userRoutes)
 app.use("/api/chat",chatRoutes)
+app.use("/api/message",messageRoutes)
 
 // error handling
 app.use(notFound)

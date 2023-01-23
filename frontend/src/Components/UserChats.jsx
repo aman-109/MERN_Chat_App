@@ -88,7 +88,7 @@ const UserChats = ({fetchAgain}) => {
           overflowY="hidden"
         >
           {chats ? (
-            <Stack overflowY="scroll">
+            <Stack overflow="scroll" >
               {chats?.map((ele) => (
                 <Box
                   onClick={() => setSelectedChat(ele)}
