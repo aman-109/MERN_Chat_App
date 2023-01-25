@@ -9,15 +9,60 @@ import UpdateGroupChatModal from "./Misc/UpdateGroupChatModal";
 import axios from "axios";
 import { useEffect } from "react";
 import ChatMessages from "./ChatMessages";
+import io from "socket.io-client"
+import Lottie from "react-lottie"
+import animationData from "../Animation/TypingComponent.json"
+
+
+const ENDPOINT = "http://localhost:5000"
+var socket,SelectedChatCompare
+
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
+  const [socketConnected, setSocketConnected] = useState(false)
+  const [typing, setTyping] = useState(false)
+  const [isTyping, setIsTyping] = useState(false)
   const toast = useToast();
 
   const { selectedChat, setSelectedChat, user } = useContext(AppContext);
 
+  const defaultOptions = {
+    loop: true,
+    autoplay: true, 
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice'
+    }
+  };
+
+
+  useEffect(()=>{
+    socket=io(ENDPOINT)
+    socket.emit("setup",user)
+    socket.on("connected",()=>setSocketConnected(true))
+    socket.on('typing',()=>setIsTyping(true))
+    socket.on('stop typing',()=>setIsTyping(false))
+  },[])
+
+  useEffect(()=>{
+    fetchAllMessages()
+    SelectedChatCompare=selectedChat
+      },[selectedChat])
+    
+
+  useEffect(() => {
+  socket.on("message recieved",(newMessageRecived)=>{
+    if(!SelectedChatCompare || SelectedChatCompare._id !== newMessageRecived.chat._id){
+      //give notification
+    }else{
+      setMessages([...messages,newMessageRecived])
+    }
+  })
+  })
+  
   const fetchAllMessages=async()=>{
     if(!selectedChat) return;
     try {
@@ -32,6 +77,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
         setMessages(data)
         setLoading(false)
+        socket.emit("join chat",selectedChat._id)
     } catch (error) {
       toast({
         title: "Error Occured!",
@@ -46,6 +92,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   const sendMessageFun=async(event)=>{
     if(event.key==="Enter" && newMessage){
+      socket.emit("stop typing",selectedChat._id)
       try {
         setNewMessage("")
         const { data } = await axios.post(`http://localhost:5000/api/message`,{
@@ -58,6 +105,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             },
           });
           console.log(data)
+          socket.emit("new message",data)
           setMessages([...messages,data])
       } catch (error) {
         toast({
@@ -73,14 +121,38 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   }
   const typingHandler=(e)=>{
     setNewMessage(e.target.value)
+
+    if(!socketConnected) return ;
+    if(!typing){
+      setTyping(true)
+      socket.emit("typing",selectedChat._id)
+    }
+
+    // debouncing /throttling function that
+    //stops typing after 3000
+    //after user stops typing
+
+    let lastTypingTime=new Date().getTime()
+    var timerLength=3000;
+    setTimeout(() => {
+
+      var currentTime=new Date().getTime()
+
+      var timeDifference =currentTime-lastTypingTime
+
+      if(timeDifference>= timerLength && typing){
+        socket.emit("stop typing",selectedChat._id)
+        setTyping(false)
+      }
+      
+    }, timerLength);
+
   }
 
 
 
-  useEffect(()=>{
-fetchAllMessages()
-  },[selectedChat])
 
+ 
 
   return (
     <>
@@ -103,7 +175,7 @@ fetchAllMessages()
             />
 
             {/* chat name logic here */}
-            {!selectedChat.isGroupChat ? (
+            { messages && (!selectedChat.isGroupChat ? (
               <>
                 {getSender(user, selectedChat.users)}
                 <ProfileModal user={getWholeSender(user, selectedChat.users)} />
@@ -117,7 +189,7 @@ fetchAllMessages()
                   fetchAllMessages={fetchAllMessages}
                 />
               </>
-            )}
+            ))}
           </Text>
 
           {/* chat box message Ui */}
@@ -160,6 +232,14 @@ fetchAllMessages()
             
             {/* input typing box */}
             <FormControl onKeyDown={sendMessageFun} isRequired mt={3}>
+              {isTyping ? <div>
+                    <Lottie
+                    options={defaultOptions}
+                    height="30px"
+                    width={"70px"}
+                    style={{marginBottom:"15px",marginLeft:"0px"}}
+                    />
+              </div> : <></>}
               <Input
                variant="filled"
                bg="gray.300"
