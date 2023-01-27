@@ -14,7 +14,7 @@ const UserChats = ({fetchAgain}) => {
 
   const getChats=async()=>{
     try {
-        const { data } = await axios.get("http://localhost:5000/api/chat", {
+        const { data } = await axios.get("/api/chat", {
             headers: {
               Authorization: `Bearer ${user.token}`,
             },
@@ -57,7 +57,7 @@ const UserChats = ({fetchAgain}) => {
         <Box
           pb={3}
           px={3}
-          fontSize={{ base: "25px", md: "28px" }}
+          fontSize={{ base: "25px", md: "27px" }}
           fontFamily="Work sans"
           display="flex"
           w="100%"

@@ -13,7 +13,7 @@ const Signup = () => {
 
   })
   const toast=useToast()
-  const [profile,setProfile]=useState()
+  const [profile,setProfile]=useState("")
   const [isLoading,setLoading]=useState(false)
   const [show,setShow]=useState(false)
   const navigate=useNavigate()
@@ -103,8 +103,9 @@ const Signup = () => {
         password:state.password,
         pic:profile
       }
+      console.log(profile)
       
-      const data=await axios.post("http://localhost:5000/api/user",body,{
+      const data=await axios.post("/api/user",body,{
         headers:{
           "Content-type": "application/json",
         }
