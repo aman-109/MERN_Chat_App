@@ -14,7 +14,7 @@ import Lottie from "react-lottie"
 import animationData from "../Animation/TypingComponent.json"
 
 
-const ENDPOINT = "http://localhost:5000"
+const ENDPOINT = "https://iwecommunicate.onrender.com"
 var socket,SelectedChatCompare
 
 
