@@ -45,7 +45,7 @@ const SideDrawer = () => {
 
       try {
         setLoading(true)
-        const {data}=await axios.get(`http://localhost:5000/api/user?search=${searchText}`,{
+        const {data}=await axios.get(`/api/user?search=${searchText}`,{
             headers:{
                 Authorization:`Bearer ${user.token}`
             }
@@ -70,7 +70,7 @@ const SideDrawer = () => {
   const fetchUserChat=async(userId)=>{
     try {
         setChatLoading(true)
-        const {data}=await axios.post("http://localhost:5000/api/chat",{userId},{
+        const {data}=await axios.post("/api/chat",{userId},{
             headers:{
                 "Content-type":"application/json",
                 Authorization:`Bearer ${user.token}`

@@ -72,7 +72,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     try {
       setLoading(true);
 
-      const { data } = await axios.get(`http://localhost:5000/api/message/${selectedChat._id}`,
+      const { data } = await axios.get(`/api/message/${selectedChat._id}`,
       {
           headers: {
             Authorization: `Bearer ${user.token}`,
@@ -99,7 +99,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       socket.emit("stop typing",selectedChat._id)
       try {
         setNewMessage("")
-        const { data } = await axios.post(`http://localhost:5000/api/message`,{
+        const { data } = await axios.post(`/api/message`,{
           content: newMessage,
           chatId: selectedChat._id,
         },

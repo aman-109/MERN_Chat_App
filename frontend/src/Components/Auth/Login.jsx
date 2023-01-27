@@ -45,7 +45,7 @@ const Login = () => {
         password:state.password,
       }
       
-      const data=await axios.post("http://localhost:5000/api/user/login",body,{
+      const data=await axios.post("/api/user/login",body,{
         headers:{
           "Content-type": "application/json",
         }
@@ -129,8 +129,8 @@ const Login = () => {
               // mt={15}
              onClick={()=>{
               setState({
-                email:"aman.mate.50@gmail.com",
-                password:"amanmate"
+                email:"guestuser@gmail.com",
+                password:"Guest123"
               })
              }}
             >
