@@ -8,9 +8,12 @@ import { useState } from 'react'
 import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppContext } from '../../Context/AppContext'
+import { getSender } from '../../Utils/Utils'
 import UserItem from '../User/UserItem'
 import ProfileModal from './ProfileModal'
 import SkeletonCom from './SkeletonCom'
+import {Effect} from "react-notification-badge"
+import NotificationBadge from "react-notification-badge"
 
 const SideDrawer = () => {
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -18,7 +21,7 @@ const SideDrawer = () => {
     const [loading,setLoading]=useState(false)
     const [chatLoading,setChatLoading]=useState(false)
     const [result,setResult]=useState([])
-    const { setSelectedChat,user, chats, setChats,}=useContext(AppContext)
+    const { setSelectedChat,user, chats, setChats,notification,setNotification}=useContext(AppContext)
     const navigate=useNavigate()
     const toast=useToast()
 
@@ -121,9 +124,26 @@ const SideDrawer = () => {
             {/* Notification */}
           <Menu>
             <MenuButton p={1}>
-             
+             <NotificationBadge
+             count={notification.length}
+             effect={Effect.SCALE}
+             />
               <BellIcon fontSize="2xl" m={1} />
             </MenuButton>
+
+            <MenuList pl={2}>
+              {!notification.length && "No New Messages"}
+              {notification.map(notify=>(
+                <MenuItem key={notify._id} onClick={()=>{
+                  setSelectedChat(notify.chat)
+                  setNotification(notification.filter((x)=>x!=notify))
+                }}>
+                {notify.chat.isGroupChat ? `New Message in ${notify.chat.chatName}`
+                
+              : `New Message from ${getSender(user,notify.chat.users)}`}
+                </MenuItem>
+              ))}
+            </MenuList>
            
           </Menu>
 

@@ -16,7 +16,7 @@ const ChatMessages = ({ messages }) => {
     <ScrollableFeed>
       {messages &&
         messages.map((m, i) => (
-          <Box display="flex" key={m.id}>
+          <Box display="flex" key={m._id}>
             {(isSameSender(messages, m, i, user._id) ||
               isLastMessage(messages, i, user._id)) && (
               <Tooltip label={m.sender.name} placment="bottom-start" hasArrow>

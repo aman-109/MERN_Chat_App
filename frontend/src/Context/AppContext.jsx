@@ -12,6 +12,7 @@ export default function AppContextProvider({children}){
     const [user,setUser]=useState()
     const [chats, setChats] = useState([]);
     const [selectedChat, setSelectedChat] = useState();
+    const [notification, setNotification] = useState([])
     const navigate=useNavigate()
 
 
@@ -28,6 +29,8 @@ export default function AppContextProvider({children}){
         setUser,
         chats,
         setChats,
+        notification,
+        setNotification
       }}>
         {children}
     </AppContext.Provider>
