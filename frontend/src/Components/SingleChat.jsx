@@ -27,7 +27,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [isTyping, setIsTyping] = useState(false)
   const toast = useToast();
 
-  const { selectedChat, setSelectedChat, user } = useContext(AppContext);
+  const { selectedChat, setSelectedChat, user,notification,setNotification } = useContext(AppContext);
 
   const defaultOptions = {
     loop: true,
@@ -57,6 +57,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   socket.on("message recieved",(newMessageRecived)=>{
     if(!SelectedChatCompare || SelectedChatCompare._id !== newMessageRecived.chat._id){
       //give notification
+      if(!notification.includes(newMessageRecived)){
+        setNotification([newMessageRecived,...notification])
+        setFetchAgain(!fetchAgain)
+      }
     }else{
       setMessages([...messages,newMessageRecived])
     }
@@ -104,7 +108,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               Authorization: `Bearer ${user.token}`,
             },
           });
-          console.log(data)
           socket.emit("new message",data)
           setMessages([...messages,data])
       } catch (error) {
